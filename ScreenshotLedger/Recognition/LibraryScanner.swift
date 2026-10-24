@@ -1,5 +1,8 @@
 import Foundation
 import Photos
+// presentLimitedLibraryPicker(from:) 是 PhotosUI 给 PHPhotoLibrary 加的扩展，
+// 只 import Photos 找不到这个方法。
+import PhotosUI
 import UIKit
 // 同 LedgerStore：ObservableObject / @Published 在 Combine 里
 import Combine
@@ -193,7 +196,9 @@ final class LibraryScanner: ObservableObject {
             let options = PHImageRequestOptions()
             options.isSynchronous = false
             options.deliveryMode = .highQualityFormat
-            options.resizeMode = .downscale
+            // 只有 .fast / .exact / .none 三种，没有 .downscale。
+            // .exact 配合 targetSize 会在后台线程按比例缩小，够用。
+            options.resizeMode = .exact
             options.isNetworkAccessAllowed = true
             let flag = OnceFlag()
             PHImageManager.default().requestImage(

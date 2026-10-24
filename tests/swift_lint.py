@@ -130,6 +130,7 @@ def check_imports(path: Path, code: str):
         "UserNotifications": ["UNUserNotificationCenter", "UNMutableNotificationContent",
                               "UNCalendarNotificationTrigger", "UNNotificationRequest"],
         "Photos": ["PHAsset", "PHPhotoLibrary", "PHImageManager", "PHFetchOptions"],
+        "PhotosUI": ["presentLimitedLibraryPicker"],
         "Vision": ["VNRecognizeTextRequest", "VNImageRequestHandler", "VNRecognizedTextObservation",
                    "CGImagePropertyOrientation"],
         "Combine": ["ObservableObject", "@Published"],
