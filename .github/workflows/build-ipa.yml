@@ -1,0 +1,58 @@
+name: build-ipa
+
+# 给你一台"云 Mac"：不用买 Mac，推到 GitHub 就自动编译出 .ipa 文件。
+# 用法见 README「路线 D」。
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 装 XcodeGen
+        run: brew install xcodegen
+
+      - name: 生成 Xcode 工程
+        run: xcodegen generate
+
+      - name: 显示可用的 Xcode
+        run: xcodebuild -version
+
+      # 不签名编译。后面交给 AltStore / Sideloadly 用你自己的 Apple ID 重签，
+      # 所以这里把签名关掉反而最省事——不需要在仓库里放证书。
+      - name: 编译（不签名）
+        run: |
+          xcodebuild \
+            -project ScreenshotLedger.xcodeproj \
+            -scheme ScreenshotLedger \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: 打包成 ipa
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/ScreenshotLedger.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "没找到编译产物：$APP_PATH"
+            ls build/Build/Products/ || true
+            exit 1
+          fi
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -r ScreenshotLedger.ipa Payload
+          ls -lh ScreenshotLedger.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ScreenshotLedger-ipa
+          path: ScreenshotLedger.ipa
+          if-no-files-found: error

@@ -1,0 +1,51 @@
+name: ScreenshotLedger
+options:
+  bundleIdPrefix: local.yg
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.9"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    # 关掉「严格并发检查」以外的噪音，Swift 5 语言模式下只报警告不报错
+    SWIFT_STRICT_CONCURRENCY: minimal
+
+# GitHub Actions 上跑 xcodebuild 必须有一个「共享 scheme」，
+# 否则 xcodegen 生成工程后 -scheme ScreenshotLedger 会报 scheme not found。
+schemes:
+  ScreenshotLedger:
+    build:
+      targets:
+        ScreenshotLedger: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+targets:
+  ScreenshotLedger:
+    type: application
+    platform: iOS
+    sources:
+      - path: ScreenshotLedger
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.yg.screenshotledger
+        PRODUCT_NAME: ScreenshotLedger
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: ScreenshotLedger/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SUPPORTS_MACCATALYST: NO
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+        # 签名交给 Xcode / AltStore 去填：装到自己手机上要用你自己的 Apple ID 签，
+        # 这里不能写死成「不签名」，否则真机上跑不起来。
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+        ENABLE_BITCODE: NO

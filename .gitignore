@@ -1,0 +1,15 @@
+# Xcode / XcodeGen 生成物
+*.xcodeproj
+*.xcworkspace
+build/
+DerivedData/
+Payload/
+*.ipa
+*.dSYM.zip
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
