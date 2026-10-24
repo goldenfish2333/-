@@ -9,9 +9,17 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    # macos-14 自带的 Xcode 是 15.4，而新版 XcodeGen 生成的是 Xcode 16 的工程格式
+    # （objectVersion 77）。15.4 打不开 77，所以必须用带 Xcode 16 的镜像。
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
+      # 再显式锁一次最新稳定版 Xcode，避免镜像默认版本落后。
+      - name: 选择 Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: 装 XcodeGen
         run: brew install xcodegen
@@ -19,8 +27,11 @@ jobs:
       - name: 生成 Xcode 工程
         run: xcodegen generate
 
-      - name: 显示可用的 Xcode
-        run: xcodebuild -version
+      - name: 显示版本
+        run: |
+          xcodebuild -version
+          # 打出来方便排查「工程格式过新/过旧」这类问题
+          grep -m1 objectVersion ScreenshotLedger.xcodeproj/project.pbxproj || true
 
       # 不签名编译。后面交给 AltStore / Sideloadly 用你自己的 Apple ID 重签，
       # 所以这里把签名关掉反而最省事——不需要在仓库里放证书。
