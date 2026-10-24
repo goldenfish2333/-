@@ -40,9 +40,7 @@ D 的完整动作只有三步，全在浏览器和一次安装里完成：
 2. 仓库里已经放好了 `.github/workflows/build-ipa.yml`。你 push 完，GitHub 自动开一台云 Mac 编译，**不需要你有 Mac**，约 5–8 分钟。
 3. 进仓库的 **Actions** 页 → 点进最新那次运行 → 底部 **Artifacts** 下载 `ScreenshotLedger-ipa`，解开得到 `ScreenshotLedger.ipa`。
 
-拿到 ipa 之后，装到 iPhone 上有两种方式：
-
-- **AltStore / SideStore**（推荐）：Windows 上装 AltServer，手机装 AltStore，把 ipa 拖进去签名安装。之后每 7 天，同一个 Wi-Fi 下 AltServer 自动帮你续签，你什么都不用做。
+拿到 ipa 之后，装到 iPhone 上有两种方式：- **AltStore / SideStore**（推荐）：Windows 上装 AltServer，手机装 AltStore，把 ipa 拖进去签名安装。之后每 7 天，同一个 Wi-Fi 下 AltServer 自动帮你续签，你什么都不用做。
 - **Sideloadly**（更简单，但不自动续）：Windows 上打开 Sideloadly，拖 ipa 进去，填 Apple ID，点 Start。7 天后要再点一次。
 - **给朋友装**：把 ipa 发给他，他自己用 Sideloadly 配自己的 Apple ID 签名。**不要**用你的 Apple ID 给他签（免费账号每 7 天只有 3 台设备额度，且证书是同一个）。
 
@@ -157,6 +155,8 @@ open ScreenshotLedger.xcodeproj
 3. 打开 Sideloadly：IPA 处拖入 `ScreenshotLedger.ipa`，Apple ID 填你的，点 **Start**，输密码。
 4. 手机上 **设置 → 通用 → VPN与设备管理 → 你的 Apple ID → 信任**。
 5. 打开 App，允许访问照片（**建议选「完全访问」**，选「仅部分照片」的话每次新增截图都要手动放行）。
+
+> **注意**：这个 ipa 是「未签名」的（CI 上没有证书，也故意不签——省得你在仓库里放私钥）。Sideloadly / AltStore 会用它自己的签名流程重新打包，所以未签名不影响安装。但它**不能**用「爱思助手一键安装」「苹果配置描述文件」这类方式直接装。
 
 **方式二：AltStore（多花 10 分钟，换来"永远不用管"）**
 

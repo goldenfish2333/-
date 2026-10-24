@@ -1,6 +1,8 @@
 # Xcode / XcodeGen 生成物
 *.xcodeproj
 *.xcworkspace
+# 本地产物（编译出来的 ipa 放这儿，不进仓库）
+dist/
 build/
 DerivedData/
 Payload/
